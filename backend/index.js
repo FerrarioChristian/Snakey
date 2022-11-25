@@ -47,10 +47,11 @@ const loop = () => {
   if (playerNumber > 2) {
     moveBody();
     checkFoodCollision();
-    const collision = checkCollision();
+    const winner = checkCollision();
+    if (!winner) {
+      io.emit("statusUpdate", gameState);
+    }
   }
-  console.clear();
-  console.dir(gameState, { depth: null });
 };
 
 const newFood = () => {
@@ -79,7 +80,7 @@ const checkCollision = () => {
   let player1Dead = false;
   let player2Dead = false;
 
-  if (gameState.player1[0] === gameState.player2[0]) {
+  if (gameState.player1.body[0] === gameState.player2.body[0]) {
     //player1Dead = true;
     //player2Dead = true;
     return 3;

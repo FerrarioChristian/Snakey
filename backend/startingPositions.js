@@ -27,9 +27,9 @@ export const startingPositions /* : StartingPositions */ = {
   player2: {
     velocity: { x: -1, y: 0 },
     body: [
-      { x: 17, y: 19 },
-      { x: 18, y: 19 },
-      { x: 19, y: 19 },
+      { x: 16, y: 18 },
+      { x: 17, y: 18 },
+      { x: 18, y: 18 },
     ],
   },
   food: {},

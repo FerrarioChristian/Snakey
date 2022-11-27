@@ -37,9 +37,9 @@ const connected = (socket) => {
     playerNumber--;
   });
 
-  socket.on("playerMoved", (data, callback) => {
+  socket.on("playerMoved", (data) => {
+    console.dir(data);
     changeVelocity(socket.id, data);
-    callback(gameState);
   });
 };
 
@@ -49,7 +49,7 @@ const loop = () => {
     checkFoodCollision();
     const winner = checkCollision();
     if (!winner) {
-      io.emit("statusUpdate", gameState);
+      io.emit("stateUpdate", gameState);
     }
   }
 };
@@ -146,23 +146,23 @@ const moveBody = () => {
 
 const changeVelocity = (id, data) => {
   if (id === gameState.player1.id) {
-    if (data === "up") {
+    if (data === "ArrowUp") {
       gameState.player1.velocity = { x: 0, y: -1 };
-    } else if (data === "down") {
+    } else if (data === "ArrowDown") {
       gameState.player1.velocity = { x: 0, y: 1 };
-    } else if (data === "left") {
+    } else if (data === "ArrowLeft") {
       gameState.player1.velocity = { x: -1, y: 0 };
-    } else if (data === "right") {
+    } else if (data === "ArrowRight") {
       gameState.player1.velocity = { x: 1, y: 0 };
     }
   } else if (id === gameState.player2.id) {
-    if (data === "up") {
+    if (data === "ArrowUp") {
       gameState.player2.velocity = { x: 0, y: -1 };
-    } else if (data === "down") {
+    } else if (data === "ArrowDown") {
       gameState.player2.velocity = { x: 0, y: 1 };
-    } else if (data === "left") {
+    } else if (data === "ArrowLeft") {
       gameState.player2.velocity = { x: -1, y: 0 };
-    } else if (data === "right") {
+    } else if (data === "ArrowRight") {
       gameState.player2.velocity = { x: 1, y: 0 };
     }
   }

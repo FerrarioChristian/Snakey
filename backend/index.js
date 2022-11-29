@@ -2,6 +2,7 @@ import { startingPositions } from "./startingPositions.js";
 import express from "express";
 import { createServer } from "http";
 import { Server } from "socket.io";
+import { borderCollision, equalPosition } from "./utilities.js";
 
 const app = express();
 const server = createServer(app);
@@ -45,103 +46,14 @@ const connected = (socket) => {
 
 const loop = () => {
   if (playerNumber > 2) {
-    moveBody();
-    checkFoodCollision();
-    const winner = checkCollision();
+    const winner = nextFrame();
     if (!winner) {
       io.emit("stateUpdate", gameState);
+    } else {
+      io.emit("gameOver", winner);
+      clearInterval(interval);
     }
   }
-};
-
-const newFood = () => {
-  const food = {
-    x: Math.floor(Math.random() * 20),
-    y: Math.floor(Math.random() * 20),
-  };
-
-  if (
-    gameState.player1.body.find((elem) => elem === food) ||
-    gameState.player2.body.find((elem) => elem === food)
-  ) {
-    return newFood();
-  }
-
-  gameState.food = food;
-};
-
-/* Return:
-    0 if no collision
-    1 if player 1 collided
-    2 if player 2 collided
-    3 if both collided 
-*/
-const checkCollision = () => {
-  let player1Dead = false;
-  let player2Dead = false;
-
-  if (gameState.player1.body[0] === gameState.player2.body[0]) {
-    //player1Dead = true;
-    //player2Dead = true;
-    return 3;
-  }
-
-  if (
-    gameState.player1.body.find((elem) => elem === gameState.player2[0]) ||
-    gameState.player2.body[0].x > 19 ||
-    gameState.player2.body[0].x < 0 ||
-    gameState.player2.body[0].y > 19 ||
-    gameState.player2.body[0].y < 0
-  ) {
-    player2Dead = true;
-  }
-  if (
-    gameState.player2.body.find((elem) => elem === gameState.player1[0]) ||
-    gameState.player1.body[0].x > 19 ||
-    gameState.player1.body[0].x < 0 ||
-    gameState.player1.body[0].y > 19 ||
-    gameState.player1.body[0].y < 0
-  )
-    player1Dead = true;
-
-  if (player1Dead && player2Dead) {
-    return 3;
-  } else if (player1Dead) {
-    return 2;
-  } else if (player2Dead) {
-    return 1;
-  }
-
-  return 0;
-};
-
-const checkFoodCollision = () => {
-  if (gameState.player1.body[0] === gameState.food) {
-    gameState.food = newFood();
-    gameState.player1.body.push(
-      gameState.player1.body[gameState.player1.body.length - 1]
-    );
-  }
-  if (gameState.player2.body[0] === gameState.food) {
-    gameState.food = newFood();
-    gameState.player2.body.push(
-      gameState.player2.body[gameState.player2.body.length - 1]
-    );
-  }
-};
-
-const moveBody = () => {
-  gameState.player1.body.pop();
-  gameState.player1.body.unshift({
-    x: gameState.player1.body[0].x + gameState.player1.velocity.x,
-    y: gameState.player1.body[0].y + gameState.player1.velocity.y,
-  });
-
-  gameState.player2.body.pop();
-  gameState.player2.body.unshift({
-    x: gameState.player2.body[0].x + gameState.player2.velocity.x,
-    y: gameState.player2.body[0].y + gameState.player2.velocity.y,
-  });
 };
 
 const changeVelocity = (id, data) => {
@@ -168,5 +80,103 @@ const changeVelocity = (id, data) => {
   }
 };
 
+const nextFrame = () => {
+  moveBody();
+  checkFoodCollision();
+  return checkCollision();
+};
+
+/* Return:
+    0 if no collision
+    1 if player 1 collided
+    2 if player 2 collided
+    3 if both collided 
+*/
+const checkCollision = () => {
+  let player1Dead = false;
+  let player2Dead = false;
+
+  if (equalPosition(gameState.player1.body[0], gameState.player2.body[0])) {
+    //player1Dead = true;
+    //player2Dead = true;
+    console.log("Both players collided");
+    return 3;
+  }
+
+  if (
+    gameState.player1.body.find((elem) =>
+      equalPosition(elem, gameState.player2.body[0])
+    ) ||
+    borderCollision(gameState.player2.body[0])
+  ) {
+    player2Dead = true;
+  }
+  if (
+    gameState.player2.body.find((elem) =>
+      equalPosition(elem, gameState.player1.body[0])
+    ) ||
+    borderCollision(gameState.player1.body[0])
+  )
+    player1Dead = true;
+
+  if (player1Dead && player2Dead) {
+    console.log("Both players collided");
+    return 3;
+  } else if (player1Dead) {
+    console.log("player 1 collided, player 2 wins");
+    return 2;
+  } else if (player2Dead) {
+    console.log("player 2 collided, player 1 wins");
+    return 1;
+  }
+
+  return 0;
+};
+
+const checkFoodCollision = () => {
+  if (equalPosition(gameState.player1.body[0], gameState.food)) {
+    gameState.food = newFood();
+    gameState.player1.body.push(
+      gameState.player1.body[gameState.player1.body.length - 1]
+    );
+  }
+  if (equalPosition(gameState.player2.body[0], gameState.food)) {
+    gameState.food = newFood();
+    gameState.player2.body.push(
+      gameState.player2.body[gameState.player2.body.length - 1]
+    );
+  }
+};
+
+const moveBody = () => {
+  gameState.player1.body.pop();
+  gameState.player1.body.unshift({
+    x: gameState.player1.body[0].x + gameState.player1.velocity.x,
+    y: gameState.player1.body[0].y + gameState.player1.velocity.y,
+  });
+
+  gameState.player2.body.pop();
+  gameState.player2.body.unshift({
+    x: gameState.player2.body[0].x + gameState.player2.velocity.x,
+    y: gameState.player2.body[0].y + gameState.player2.velocity.y,
+  });
+};
+
+const newFood = () => {
+  const food = {
+    x: Math.floor(Math.random() * 20),
+    y: Math.floor(Math.random() * 20),
+  };
+
+  if (
+    gameState.player1.body.find((elem) => elem === food) ||
+    gameState.player2.body.find((elem) => elem === food)
+  ) {
+    return newFood();
+  }
+
+  gameState.food = food;
+};
+
 io.on("connection", connected);
-setInterval(loop, 1000);
+const interval = setInterval(loop, 1000);

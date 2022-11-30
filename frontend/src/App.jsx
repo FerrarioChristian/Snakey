@@ -5,17 +5,28 @@ import { init, render } from "./gameEngine";
 import { socket } from "./socket";
 
 function App() {
+  const [winner, setWinner] = useState("");
+
   useEffect(() => {
     init();
     socket.on("connect", () => {
       console.log("Connected");
     });
 
-    socket.on("disconnect", () => {
-      console.log("Disconnected");
+    socket.on("gameStart", () => {});
+    socket.on("gameOver", (winner) => {
+      if (winner === 3) {
+        setWinner("Draw");
+      }
+      if (winner === 2) {
+        setWinner("Player 2");
+      }
+      if (winner === 1) {
+        setWinner("Player 1");
+      }
     });
 
-    socket.on("statusUpdate", (gameState) => {
+    socket.on("stateUpdate", (gameState) => {
       render(gameState);
     });
 
@@ -34,6 +45,7 @@ function App() {
     <>
       <div id="gameScreen">
         <div>
+          <p>winner: {winner}</p>
           <canvas id="canvas"></canvas>
         </div>
       </div>

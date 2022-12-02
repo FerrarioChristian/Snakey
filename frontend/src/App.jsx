@@ -37,10 +37,6 @@ function App() {
     };
   }, []);
 
-  const playerMoved = () => {
-    socket.emit("playerMoved");
-  };
-
   return (
     <>
       <div id="gameScreen">

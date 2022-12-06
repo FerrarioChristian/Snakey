@@ -1,29 +1,22 @@
-import React from "react";
-import { useEffect, useState } from "react";
-import { init, render } from "./gameEngine";
-
+import React, { useState } from "react";
+import { useEffect } from "react";
+import { init, render, winnerToText } from "./gameEngine";
 import { socket } from "./socket";
 
 function App() {
+  let playerNumber;
   const [winner, setWinner] = useState("");
 
   useEffect(() => {
     init();
-    socket.on("connect", () => {
-      console.log("Connected");
+    socket.on("connect", (playerNumber) => {
+      playerNumber = playerNumber;
     });
 
     socket.on("gameStart", () => {});
+
     socket.on("gameOver", (winner) => {
-      if (winner === 3) {
-        setWinner("Draw");
-      }
-      if (winner === 2) {
-        setWinner("Player 2");
-      }
-      if (winner === 1) {
-        setWinner("Player 1");
-      }
+      setWinner(winnerToText(winner));
     });
 
     socket.on("stateUpdate", (gameState) => {
@@ -34,18 +27,18 @@ function App() {
       socket.off("connect");
       socket.off("disconnect");
       socket.off("statusUpdate");
+      socket.off("gameStart");
+      socket.off("gameOver");
     };
   }, []);
 
   return (
-    <>
-      <div id="gameScreen">
-        <div>
-          <p>winner: {winner}</p>
-          <canvas id="canvas"></canvas>
-        </div>
+    <div id="gameScreen">
+      <h1>{winner}</h1>
+      <div>
+        <canvas id="canvas" />
       </div>
-    </>
+    </div>
   );
 }
 

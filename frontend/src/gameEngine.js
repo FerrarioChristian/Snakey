@@ -7,9 +7,9 @@ export const init = () => {
   canvas = document.getElementById("canvas");
   context = canvas.getContext("2d");
 
-  canvas.width = canvas.height = 800;
+  canvas.width = canvas.height = 900;
 
-  context.fillStyle = "black";
+  context.fillStyle = "#051014";
   context.fillRect(0, 0, canvas.width, canvas.height);
 
   document.addEventListener("keydown", (e) => {
@@ -20,21 +20,21 @@ export const init = () => {
 };
 
 export const render = (gameState) => {
-  context.fillStyle = "black";
+  context.fillStyle = "#051014";
   context.fillRect(0, 0, canvas.width, canvas.height);
 
   const food = gameState.food;
   const size = canvas.width / 20;
 
-  context.fillStyle = "pink";
+  context.fillStyle = "#ACC3A6";
   context.fillRect(food.x * size, food.y * size, size, size);
 
   if (socket.id === gameState.player1.id) {
-    paintSnake(gameState.player1, size, "blue");
-    paintSnake(gameState.player2, size, "red");
+    paintSnake(gameState.player1, size, "#454ADE");
+    paintSnake(gameState.player2, size, "#EF3E36");
   } else {
-    paintSnake(gameState.player1, size, "red");
-    paintSnake(gameState.player2, size, "blue");
+    paintSnake(gameState.player1, size, "#EF3E36");
+    paintSnake(gameState.player2, size, "#454ADE");
   }
 };
 

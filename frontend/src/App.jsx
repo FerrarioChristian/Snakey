@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
+import Canvas from "./components/Canvas";
 import { init, render, winnerToText } from "./gameEngine";
 import { socket } from "./socket";
+import Title from "./Title";
 
 function App() {
   let playerNumber;
@@ -16,7 +18,7 @@ function App() {
     socket.on("gameStart", () => {});
 
     socket.on("gameOver", (winner) => {
-      setWinner(winnerToText(winner));
+      setWinner(winnerToText(winner, playerNumber));
     });
 
     socket.on("stateUpdate", (gameState) => {
@@ -34,10 +36,9 @@ function App() {
 
   return (
     <div id="gameScreen">
+      <Title />
+      <Canvas />
       <h1>{winner}</h1>
-      <div>
-        <canvas id="canvas" />
-      </div>
     </div>
   );
 }

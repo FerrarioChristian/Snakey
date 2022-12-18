@@ -16,10 +16,11 @@ const CenteredDiv = styled.div`
 `;
 
 const Text = styled.h1`
-  font-size: 100px;
-  font-family: "Press Start 2P", cursive;
-  color: #fff;
+  font-size: 80px;
+  font-family: "Fredoka One", cursive;
+  color: #ead2ac;
   margin: 15px 10px;
+  font-weight: 400;
 `;
 
 export default Title;

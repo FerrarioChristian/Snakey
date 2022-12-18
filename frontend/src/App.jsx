@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import Canvas from "./components/Canvas";
 import { init, render, winnerToText } from "./gameEngine";
 import { socket } from "./socket";
-import Title from "./Title";
+import Title from "./components/Title";
 
 function App() {
   let playerNumber;
@@ -37,8 +37,7 @@ function App() {
   return (
     <div id="gameScreen">
       <Title />
-      <Canvas />
-      <h1>{winner}</h1>
+      <Canvas winner={winner} />
     </div>
   );
 }

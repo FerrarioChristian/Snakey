@@ -9,7 +9,7 @@ export const init = () => {
 
   canvas.width = canvas.height = 900;
 
-  context.fillStyle = "#051014";
+  context.fillStyle = "#04151F";
   context.fillRect(0, 0, canvas.width, canvas.height);
 
   document.addEventListener("keydown", (e) => {
@@ -20,7 +20,7 @@ export const init = () => {
 };
 
 export const render = (gameState) => {
-  context.fillStyle = "#051014";
+  context.fillStyle = "#04151F";
   context.fillRect(0, 0, canvas.width, canvas.height);
 
   const food = gameState.food;
@@ -51,8 +51,8 @@ export const winnerToText = (winner, playerNumber) => {
   if (winner === 3) {
     return "Draw";
   } else if (winner === playerNumber) {
-    return "You Win!";
+    return "You Win";
   } else {
-    return "You Lose!";
+    return "You Lose";
   }
 };

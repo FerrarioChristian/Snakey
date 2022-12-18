@@ -1,7 +1,7 @@
 const newFood = (gameState) => {
   const food = {
-    x: Math.floor(Math.random() * 20),
-    y: Math.floor(Math.random() * 20),
+    x: Math.floor(Math.random() * 18) + 1,
+    y: Math.floor(Math.random() * 18) + 1,
   };
 
   if (

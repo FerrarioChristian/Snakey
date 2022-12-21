@@ -25,6 +25,10 @@ function App() {
       render(gameState);
     });
 
+    socket.on("newGame", () => {
+      setWinner("");
+    });
+
     return () => {
       socket.off("connect");
       socket.off("disconnect");

@@ -4,17 +4,17 @@ import { changeVelocity } from "./game/movements.js";
 
 let gameState;
 let playerNumber = 1;
+let interval = null;
 
 const connected = (socket) => {
   if (playerNumber === 1) {
     gameState = initNewGame();
     gameState.player1["id"] = socket.id;
     playerNumber++;
-    console.log("Player 1 connected");
   } else if (playerNumber === 2) {
     gameState.player2["id"] = socket.id;
     playerNumber++;
-    console.log("Player 2 connected");
+    interval = setInterval(loop, 500);
   } else {
     socket.disconnect();
     console.log("Too many players, new connection refused");
@@ -30,22 +30,22 @@ const connected = (socket) => {
   });
 
   socket.on("newGame", () => {
-    gameState = initNewGame();
-    io.emit("stateUpdate", gameState);
+    socket.emit("newGame");
+    interval = setInterval(loop, 500);
   });
 };
 
 const loop = () => {
   if (playerNumber > 2) {
     const winner = nextFrame(gameState);
-    if (!winner) {
-      io.emit("stateUpdate", gameState);
-    } else {
+    if (winner) {
+      clearInterval(interval);
       io.emit("gameOver", winner);
       gameState = initNewGame();
+    } else {
+      io.emit("stateUpdate", gameState);
     }
   }
 };
 
 io.on("connection", connected);
-const interval = setInterval(loop, 1000);

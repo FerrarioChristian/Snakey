@@ -28,6 +28,11 @@ const connected = (socket) => {
   socket.on("playerMoved", (data) => {
     changeVelocity(gameState, socket.id, data);
   });
+
+  socket.on("newGame", () => {
+    gameState = initNewGame();
+    io.emit("stateUpdate", gameState);
+  });
 };
 
 const loop = () => {

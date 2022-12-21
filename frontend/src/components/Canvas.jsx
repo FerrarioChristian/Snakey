@@ -1,14 +1,21 @@
 import React from "react";
 import styled from "styled-components";
+import { socket } from "../socket";
 
 function Canvas({ winner }) {
+  const newGameOnClick = () => {
+    socket.emit("newGame");
+  };
+
   return (
     <CenteredDiv>
       <div>
         <CenteredDiv>
           <WinnerTextDiv>
             {winner}
-            {winner ? <StyledButton>Play Again</StyledButton> : null}
+            {winner ? (
+              <StyledButton onClick={newGameOnClick}>Play Again</StyledButton>
+            ) : null}
           </WinnerTextDiv>
         </CenteredDiv>
         <StyledCanvas id="canvas" />

@@ -1,3 +1,2 @@
 # Snakey
-
-# Multiplayer snake for browser
+ Multiplayer snake for browser

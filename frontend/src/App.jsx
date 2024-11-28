@@ -6,19 +6,18 @@ import { socket } from "./socket";
 import Title from "./components/Title";
 
 function App() {
-  let playerNumber;
   const [winner, setWinner] = useState("");
 
   useEffect(() => {
     init();
-    socket.on("connect", (playerNumber) => {
-      playerNumber = playerNumber;
+    socket.on("connect", () => {
+      console.log("Connected as player " + socket.id);
     });
 
-    socket.on("gameStart", () => {});
+    socket.on("gameStart", () => { });
 
     socket.on("gameOver", (winner) => {
-      setWinner(winnerToText(winner, playerNumber));
+      setWinner(winnerToText(winner));
     });
 
     socket.on("stateUpdate", (gameState) => {
@@ -41,7 +40,7 @@ function App() {
   return (
     <div id="gameScreen">
       <Title />
-      <Canvas winner={winner} />
+      <Canvas winner={winner} setWinner={setWinner} />
     </div>
   );
 }

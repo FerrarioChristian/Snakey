@@ -47,10 +47,10 @@ function paintSnake(playerState, size, colour) {
   }
 }
 
-export const winnerToText = (winner, playerNumber) => {
-  if (winner === 3) {
+export const winnerToText = (winner) => {
+  if (winner === "draw") {
     return "Draw";
-  } else if (winner === playerNumber) {
+  } else if (winner === socket.id) {
     return "You Win";
   } else {
     return "You Lose";

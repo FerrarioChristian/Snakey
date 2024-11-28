@@ -2,9 +2,11 @@ import React from "react";
 import styled from "styled-components";
 import { socket } from "../socket";
 
-function Canvas({ winner }) {
+function Canvas({ winner, setWinner }) {
+
   const newGameOnClick = () => {
     socket.emit("newGame");
+    setWinner("");
   };
 
   return (

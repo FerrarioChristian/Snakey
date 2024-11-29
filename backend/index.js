@@ -7,6 +7,9 @@ let playerNumber = 0;
 let interval = null;
 let readyPlayers = 0;
 
+const FPS = 6;
+const LOOP_INTERVAL = 1000 / FPS;
+
 const connected = (socket) => {
   if (playerNumber === 0) {
     gameState = initNewGame();
@@ -20,7 +23,7 @@ const connected = (socket) => {
       clearInterval(interval);
       interval = null;
     }
-    interval = setInterval(loop, 500);
+    interval = setInterval(loop, LOOP_INTERVAL);
     console.log("Player 2 connected: " + socket.id);
   } else {
     socket.disconnect();
@@ -46,7 +49,7 @@ const connected = (socket) => {
       }
       gameState = initNewGame(gameState);
       console.log("\nNew game started");
-      interval = setInterval(loop, 500);
+      interval = setInterval(loop, LOOP_INTERVAL);
       io.emit("newGame");
     }
   });
